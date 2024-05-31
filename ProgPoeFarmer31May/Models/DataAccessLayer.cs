@@ -18,15 +18,15 @@ namespace ProgPoeFarmer31May.Models
         SqlDataAdapter dbAdapter;
 
      
-        public int accessgranted(User temp)
+        public int accessgranted(String Username, String Password)
         {
-            User us = temp;
+            
             dbConn.Open();
 
             string sql = "SELECT * FROM User where Username = @Username and Password = @Password";
             dbComm = new SqlCommand(sql, dbConn);
-            dbComm.Parameters.AddWithValue("@Username", us.Username1);
-            dbComm.Parameters.AddWithValue("@Password", us.Password1);
+            dbComm.Parameters.AddWithValue("@Username", Username);
+            dbComm.Parameters.AddWithValue("@Password", Password);
             dbAdapter = new SqlDataAdapter(dbComm);
              dt = null;
 
@@ -38,8 +38,33 @@ namespace ProgPoeFarmer31May.Models
                 return 0;
             }
             else
-                Product.products.AddRange(GetProductsByUsername(us.Username1));
+            {
+                Product.products.AddRange(GetProductsByUsername(Username));
                 return 1;
+            }
+        }
+        public int accessgrantedAdmin(String Username, String Password)
+        {
+
+            dbConn.Open();
+
+            string sql = "SELECT * FROM User where Username = @Username and Password = @Password and Admin = Yes";
+            dbComm = new SqlCommand(sql, dbConn);
+            dbComm.Parameters.AddWithValue("@Username", Username);
+            dbComm.Parameters.AddWithValue("@Password", Password);
+            dbAdapter = new SqlDataAdapter(dbComm);
+            dt = null;
+
+            dbAdapter.Fill(dt);
+
+
+            if (dt == null)
+            {
+                return 0;
+            }
+            else
+                Product.products.AddRange(GetProductsByUsernameAdmin(Username));
+            return 1;
         }
 
         public IEnumerable<Product> GetProductsByUsername(string username)
@@ -78,9 +103,9 @@ namespace ProgPoeFarmer31May.Models
 
             dbConn.Open();
 
-            string query = "SELECT * FROM Products WHERE Username = @Username";
+            string query = "SELECT * FROM Products";
             dbComm = new SqlCommand(query, dbConn);
-            dbComm.Parameters.AddWithValue("@Username", username);
+           
 
             SqlDataReader reader = dbComm.ExecuteReader();
 

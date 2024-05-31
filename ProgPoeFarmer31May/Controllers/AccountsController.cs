@@ -21,10 +21,10 @@ namespace ProgPoeFarmer31May.Controllers
         public IActionResult Login(User temp)
         {
             User us = temp;
-            int i = da.accessgranted(us);
+            int i = da.accessgranted(us.Username1,us.Password1);
             if (i == 1)
             {
-                return View();
+                return RedirectToAction("List", "Userpage");
             }
             else
             {
@@ -35,6 +35,23 @@ namespace ProgPoeFarmer31May.Controllers
         public IActionResult AdminLogin()
         {
             return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AdminLogin(User temp)
+        {
+            User us = temp;
+            int i = da.accessgrantedAdmin(us.Username1, us.Password1);
+            if (i == 1)
+            {
+                return RedirectToAction("List", "Userpage");
+            }
+            else
+            {
+                ViewBag.Error("This user does not exist");
+                return RedirectToAction("Login");
+            }
+            
         }
         public ActionResult Create()
         {

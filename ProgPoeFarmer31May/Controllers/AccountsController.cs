@@ -53,47 +53,7 @@ namespace ProgPoeFarmer31May.Controllers
             }
             
         }
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: LoginController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(User temp)
-        {
-            User us = temp;
-            if ( us.Username1 == null || us.Password1 == null)
-            {
-                ViewBag.Error = "Please enter all the fields";
-                return View();
-            }
-            else
-            {
-               
-                string connectionString = DataAccessLayer.connString;
-                string insertQuery = "INSERT INTO Users (Username, Password, Admin) VALUES (@Value1, @Value2, @Value3)";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand command = new SqlCommand(insertQuery, connection);
-
-                    // Add parameters
-                    command.Parameters.AddWithValue("@Value1", us.Username1);
-                    command.Parameters.AddWithValue("@Value2", us.Password1);
-                    command.Parameters.AddWithValue("@Value3", "No");
-                    
-
-
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    connection.Close();
-
-                    return RedirectToAction("Login");
-                }
-            }
-        }
+        
         // GET: LoginController/Edit/5
         public ActionResult Edit(int id)
         {

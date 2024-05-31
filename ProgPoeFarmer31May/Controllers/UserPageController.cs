@@ -50,6 +50,12 @@ namespace ProgPoeFarmer31May.Controllers
             }
             return View();
         }
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        
         public IActionResult Edit()
         {
             return View();
@@ -82,6 +88,41 @@ namespace ProgPoeFarmer31May.Controllers
                      }
                  
                 return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateProduct(Product temp)
+        {
+            Product p = temp;
+            if (p.Name1 == null || p.Category1 == null || p.ProductionDate1 == null)
+            {
+                ViewBag.Error = "Please enter all the fields";
+                return View();
+            }
+            else
+            {
+
+                string connectionString = DataAccessLayer.connString;
+                string insertQuery = "INSERT INTO Products (Name, Category, ProductionDate) VALUES (@Value1, @Value2, @Value3)";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(insertQuery, connection);
+
+                    // Add parameters
+                    command.Parameters.AddWithValue("@Value1", p.Name1);
+                    command.Parameters.AddWithValue("@Value2", p.Category1);
+                    command.Parameters.AddWithValue("@Value3", p.ProductionDate1);
+
+
+
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    connection.Close();
+
+                    return RedirectToAction("List");
+                }
             }
         }
     }

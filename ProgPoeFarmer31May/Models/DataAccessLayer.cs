@@ -11,7 +11,7 @@ namespace ProgPoeFarmer31May.Models
 {
     public class DataAccessLayer
     {
-       public static string connString = "Data Source= cpkruger.database.windows.net;Initial Catalog=FarmDB;User ID=ST1045492;Password=DoomsD@yDevice5";
+       public static string connString = "Data Source= cpkruger.database.windows.net;Initial Catalog=FarmDB;User ID= ST1045492;Password= DoomsD@yDevice5";
         SqlConnection dbConn = new SqlConnection(connString);
         SqlCommand dbComm;
         DataTable dt;
@@ -63,7 +63,8 @@ namespace ProgPoeFarmer31May.Models
                 return 0;
             }
             else
-                Product.products.AddRange(GetProductsByUsernameAdmin(Username));
+                Product.products.AddRange(GetProductsByUsernameAdmin());
+                User.users.AddRange(GetUsersAdmin());
             return 1;
         }
 
@@ -96,7 +97,8 @@ namespace ProgPoeFarmer31May.Models
 
             return products;
         }
-        public IEnumerable<Product> GetProductsByUsernameAdmin(string username)
+
+        public IEnumerable<Product> GetProductsByUsernameAdmin()
         {
             List<Product> products = new List<Product>();
 
@@ -125,6 +127,34 @@ namespace ProgPoeFarmer31May.Models
             }
 
             return products;
+        }
+        public IEnumerable<User> GetUsersAdmin()
+        {
+            List<User> users = new List<User>();
+
+
+            dbConn.Open();
+
+            string query = "SELECT * FROM Users";
+            dbComm = new SqlCommand(query, dbConn);
+
+
+            SqlDataReader reader = dbComm.ExecuteReader();
+
+            while (reader.Read())
+            {
+                User user = new User
+                {                   
+                    Username1 = reader["Username"].ToString(),
+                    Password1 = reader["Password"].ToString(),
+                    Admin1 = reader["Category"].ToString(),                   
+                };
+
+
+                users.Add(user);
+            }
+
+            return users;
         }
     }
 }

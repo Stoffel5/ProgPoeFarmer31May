@@ -1,43 +1,42 @@
 ﻿@model ProgPoeFarmer31May.Models.User
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "UserCreate";
 }
 
-<h1>Login</h1>
+<h1>UserCreate</h1>
 
 <h4>User</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Login">
+        <form asp-action="UserCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
             <div class="form-group">
-                <label asp-for="Username1" class="control-label">Username</label>
+                <label asp-for="Username1" class="control-label"></label>
                 <input asp-for="Username1" class="form-control" />
                 <span asp-validation-for="Username1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password1" class="control-label">Password</label>
+                <label asp-for="Password1" class="control-label"></label>
                 <input asp-for="Password1" class="form-control" />
                 <span asp-validation-for="Password1" class="text-danger"></span>
-            </div>          
+            </div>
             <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
-                <a asp-controller="UserPage" asp-action="List">User login</a> |
+                <label asp-for="Admin1" class="control-label"></label>
+                <input asp-for="Admin1" class="form-control" />
+                <span asp-validation-for="Admin1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-controller="Accounts" asp-action="Create">Create a account</a> |
+    <a asp-action="Index">Back to List</a>
 </div>
-<div>
-    <a asp-controller="Accounts" asp-action="AdminLogin">Admin login</a> |
-</div>
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

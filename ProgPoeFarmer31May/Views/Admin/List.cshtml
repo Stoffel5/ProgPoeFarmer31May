@@ -4,7 +4,7 @@
     ViewData["Title"] = "List";
 }
 
-<h1>List</h1>
+<h1>Product list</h1> <a asp-controller="Admin" asp-action="UserList">User list</a>
 
 <p>
     <a asp-controller="Admin" asp-action="CreateProduct">Create New</a>
@@ -51,9 +51,8 @@
                     @Html.DisplayFor(modelItem => item.ProductionDate1)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ProductID1 }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ProductID1 })
                 </td>
             </tr>
         }

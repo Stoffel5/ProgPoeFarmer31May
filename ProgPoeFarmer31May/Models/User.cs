@@ -7,6 +7,8 @@
         string Username;
         string Password;
         string Admin;
+
+        public User() { }
         public User(string username, string password, string admin)
         {
 

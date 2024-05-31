@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using ProgPoeFarmer31May.Models;
+using System.Data.SqlClient;
 
 namespace ProgPoeFarmer31May.Controllers
 {
@@ -27,7 +29,7 @@ namespace ProgPoeFarmer31May.Controllers
             else
             {
                 ViewBag.Error("This user does not exist");
-                return View();
+                return RedirectToAction("Login");
             }
         }
         public IActionResult AdminLogin()
@@ -44,10 +46,39 @@ namespace ProgPoeFarmer31May.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(User temp)
         {
-            return View(temp);
+            User us = temp;
+            if ( us.Username1 == null || us.Password1 == null)
+            {
+                ViewBag.Error = "Please enter all the fields";
+                return View();
+            }
+            else
+            {
+               
+                string connectionString = DataAccessLayer.connString;
+                string insertQuery = "INSERT INTO Users (Username, Password, Admin) VALUES (@Value1, @Value2, @Value3)";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(insertQuery, connection);
+
+                    // Add parameters
+                    command.Parameters.AddWithValue("@Value1", us.Username1);
+                    command.Parameters.AddWithValue("@Value2", us.Password1);
+                    command.Parameters.AddWithValue("@Value3", "No");
+                    
+
+
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    connection.Close();
+
+                    return RedirectToAction("Login");
+                }
+            }
         }
-            // GET: LoginController/Edit/5
-            public ActionResult Edit(int id)
+        // GET: LoginController/Edit/5
+        public ActionResult Edit(int id)
         {
             return View();
         }

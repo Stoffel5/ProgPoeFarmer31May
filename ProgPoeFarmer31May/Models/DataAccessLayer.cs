@@ -11,7 +11,7 @@ namespace ProgPoeFarmer31May.Models
 {
     public class DataAccessLayer
     {
-        static string connString = "Data Source = localhost; Initial Catalog = PROGst10045492PART3; Integrated Security = True;";
+       public static string connString = "Data Source= cpkruger.database.windows.net;Initial Catalog=FarmDB;User ID=ST1045492;Password=DoomsD@yDevice5";
         SqlConnection dbConn = new SqlConnection(connString);
         SqlCommand dbComm;
         DataTable dt;
@@ -38,55 +38,70 @@ namespace ProgPoeFarmer31May.Models
                 return 0;
             }
             else
-            {           //work further from here. I did everything before. Good luck bro, love you
-                sql = "UPDATE User " +
-           "set Active = '1' " +
-           "WHERE Username = @Username and Password = @Password";
-                dbComm = new SqlCommand(sql, dbConn);
-                dbComm.Parameters.AddWithValue("@Username", us.Username1);
-                dbComm.Parameters.AddWithValue("@Password", us.Password1);
-
-                dbComm.ExecuteNonQuery();
-                dbConn.Close();
-
-
+                Product.products.AddRange(GetProductsByUsername(us.Username1));
                 return 1;
-            }
         }
-        public void LoadProductArray()
+
+        public IEnumerable<Product> GetProductsByUsername(string username)
         {
-            
-
-            string connectionString = connString;
-            string query = "SELECT * FROM Products";
+            List<Product> products = new List<Product>();
 
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            dbConn.Open();
+
+            string query = "SELECT * FROM Products WHERE Username = @Username";
+            dbComm = new SqlCommand(query, dbConn);
+            dbComm.Parameters.AddWithValue("@Username", username);
+
+            SqlDataReader reader = dbComm.ExecuteReader();
+
+            while (reader.Read())
             {
-                SqlCommand command = new SqlCommand(query, connection);
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                Product product = new Product
                 {
-                    string data = reader.GetString(0);
-                    string[] parts = data.Split(' ');
+                    ProductID1 = int.Parse((string)reader["ProductID"]),                   
+                    Name1 = reader["Name"].ToString(),
+                    Category1 = reader["Category"].ToString(),
+                    ProductionDate1 = reader["ProductionDate"].ToString()
+                };
 
 
-                    Product p = new Product();
-                    p.ProductID1 = int.Parse(parts[1]);
-                    p.FarmerID1 = int.Parse(parts[2]);
-                    p.Name1 = parts[3];
-                    p.Category1 = parts[4];
-                    p.ProductionRate1 = parts[5];
-                    
-                  
-                    ProductContext.products.Add(p);
-                }
-
-                reader.Close();
+                products.Add(product);
             }
+
+            return products;
+        }
+        public IEnumerable<Product> GetProductsByUsernameAdmin(string username)
+        {
+            List<Product> products = new List<Product>();
+
+
+            dbConn.Open();
+
+            string query = "SELECT * FROM Products WHERE Username = @Username";
+            dbComm = new SqlCommand(query, dbConn);
+            dbComm.Parameters.AddWithValue("@Username", username);
+
+            SqlDataReader reader = dbComm.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Product product = new Product
+                {
+                    ProductID1 = int.Parse((string)reader["ProductID"]),
+                    Username1 = reader["Username"].ToString(),
+                    Name1 = reader["Name"].ToString(),
+                    Category1 = reader["Category"].ToString(),
+                    ProductionDate1 = reader["ProductionDate"].ToString()
+                };
+
+
+                products.Add(product);
+            }
+
+            return products;
         }
     }
 }
+
 

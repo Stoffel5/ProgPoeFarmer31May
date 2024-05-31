@@ -2,25 +2,23 @@
 {
     public class User
     {
-        int FarmerID;
-        string Username;
-        string Password;
-        bool Active;
-        bool Admin;
+        public static List<User> users = new List<User>();
 
-        public User(int farmerID, string username, string password, bool active, bool admin)
+        
+        string Username;
+        string Password;     
+        string Admin;
+
+        public User(string username, string password,string admin)
         {
-            FarmerID1 = farmerID;
+            
             Username1 = username;
-            Password1 = password;
-            Active1 = active;
+            Password1 = password;            
             Admin1 = admin;
         }
-
-        public int FarmerID1 { get => FarmerID; set => FarmerID = value; }
+       
         public string Username1 { get => Username; set => Username = value; }
-        public string Password1 { get => Password; set => Password = value; }
-        public bool Active1 { get => Active; set => Active = value; }
-        public bool Admin1 { get => Admin; set => Admin = value; }
+        public string Password1 { get => Password; set => Password = value; }       
+        public string Admin1 { get => Admin; set => Admin = value; }
     }
 }

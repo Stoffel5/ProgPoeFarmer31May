@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Text;
+using System.Xml.Linq;
 
 namespace ProgPoeFarmer31May.Models
 {
@@ -51,9 +53,9 @@ namespace ProgPoeFarmer31May.Models
                 return 1;
             }
         }
-        public void LoadModuleArray()
+        public void LoadProductArray()
         {
-            Product p = new Product();
+            
 
             string connectionString = connString;
             string query = "SELECT * FROM Products";
@@ -68,7 +70,18 @@ namespace ProgPoeFarmer31May.Models
                 while (reader.Read())
                 {
                     string data = reader.GetString(0);
-                    p.products.Add(data);
+                    string[] parts = data.Split(' ');
+
+
+                    Product p = new Product();
+                    p.ProductID1 = int.Parse(parts[1]);
+                    p.FarmerID1 = int.Parse(parts[2]);
+                    p.Name1 = parts[3];
+                    p.Category1 = parts[4];
+                    p.ProductionRate1 = parts[5];
+                    
+                  
+                    ProductContext.products.Add(p);
                 }
 
                 reader.Close();

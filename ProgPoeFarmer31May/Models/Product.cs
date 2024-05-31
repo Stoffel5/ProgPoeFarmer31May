@@ -5,7 +5,7 @@ namespace ProgPoeFarmer31May.Models
 {
     public class Product
     {
-      public static List<Product> products = new List<Product>();
+      //public static List<Product> products = new List<Product>();
 
 
 
@@ -57,7 +57,7 @@ namespace ProgPoeFarmer31May.Models
                         // Populate other properties similarly
                     };
 
-                    products.Add(obj);
+                    ProductContext.products.Add(obj);
                 }
                 
                 reader.Close();

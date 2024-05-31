@@ -49,7 +49,7 @@ namespace ProgPoeFarmer31May.Controllers
             else
             {
                 ViewBag.Error("This user does not exist");
-                return View();
+                return RedirectToAction("Login");
             }
         }
 

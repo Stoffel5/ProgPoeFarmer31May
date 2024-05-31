@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
+using System.Reflection;
 using System.Text;
 
 namespace ProgPoeFarmer31May.Models
@@ -48,6 +49,29 @@ namespace ProgPoeFarmer31May.Models
 
 
                 return 1;
+            }
+        }
+        public void LoadModuleArray()
+        {
+            Product p = new Product();
+
+            string connectionString = connString;
+            string query = "SELECT * FROM Products";
+
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    string data = reader.GetString(0);
+                    p.products.Add(data);
+                }
+
+                reader.Close();
             }
         }
     }

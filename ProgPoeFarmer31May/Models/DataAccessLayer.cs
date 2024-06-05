@@ -18,106 +18,110 @@ namespace ProgPoeFarmer31May.Models
         DataTable dt;
         SqlDataAdapter dbAdapter;
 
-     
-        public int accessgranted(String Username, String Password , User[] users)
+
+        public int accessgranted(string username, string password)
         {
-             
-                foreach (var user in users)
+            
+            foreach (var user in UserContext.users)
+            {
+                if (user.Username1 == username && user.Password1 == password)  // found the user
                 {
-                    if (user.Username == Username && user.Password == Password)
+                    if(user.Username1 == username && user.Password1 == password && user.Admin1 == "Y") //checking if their admin
                     {
-                        return 1;
+                        return 2;
                     }
+
+                    foreach (var prod in ProductContext.products)
+                    {
+                        if(prod.Username1 == username)
+                        {
+                            ProductContext.userproducts.Add(prod);
+                        }
+                    }
+                    return 1;
                 }
-                return 0;
             }
-
-        }
-        public int accessgrantedAdmin(String Username, String Password)
-        {
-
-            dbConn.Open();
-
-            string sql = "SELECT * FROM User where Username = @Username and Password = @Password and Admin = Yes";
-            dbComm = new SqlCommand(sql, dbConn);
-            dbComm.Parameters.AddWithValue("@Username", Username);
-            dbComm.Parameters.AddWithValue("@Password", Password);
-            dbAdapter = new SqlDataAdapter(dbComm);
-            dt = null;
-
-            dbAdapter.Fill(dt);
-
-
-            if (dt == null)
-            {
-                return 0;
-            }
-            else
-                Product.products.AddRange(GetProductsByUsernameAdmin());
-                User.users.AddRange(GetUsersAdmin());
-            return 1;
+            return 0;
         }
 
-        public IEnumerable<Product> GetProductsByUsername(string username)
+
+        public int accessgrantedAdmin(string username, string password)
         {
-            List<Product> products = new List<Product>();
 
-
-            dbConn.Open();
-
-            string query = "SELECT * FROM Products WHERE Username = @Username";
-            dbComm = new SqlCommand(query, dbConn);
-            dbComm.Parameters.AddWithValue("@Username", username);
-
-            SqlDataReader reader = dbComm.ExecuteReader();
-
-            while (reader.Read())
+            foreach (var user in UserContext.users)
             {
-                Product product = new Product
+                if (user.Username1 == username && user.Password1 == password && user.Admin1 == "Y")
                 {
-                    ProductID1 = int.Parse((string)reader["ProductID"]),                   
-                    Name1 = reader["Name"].ToString(),
-                    Category1 = reader["Category"].ToString(),
-                    ProductionDate1 = reader["ProductionDate"].ToString()
-                };
+                    foreach (var prod in ProductContext.products)
+                    {                        
+                            ProductContext.userproducts.Add(prod);                       
+                    }
+                    return 1;
+                }
+            }           
+            return 0;
 
-
-                products.Add(product);
-            }
-
-            return products;
         }
-
-        public IEnumerable<Product> GetProductsByUsernameAdmin()
-        {
-            List<Product> products = new List<Product>();
-
-
-            dbConn.Open();
-
-            string query = "SELECT * FROM Products";
-            dbComm = new SqlCommand(query, dbConn);
-           
-
-            SqlDataReader reader = dbComm.ExecuteReader();
-
-            while (reader.Read())
+            public IEnumerable<Product> GetProductsByUsername(string username)
             {
-                Product product = new Product
+                      List<Product> products = new List<Product>();
+
+
+                  dbConn.Open();
+
+                  string query = "SELECT * FROM Products WHERE Username = @Username";
+                   dbComm = new SqlCommand(query, dbConn);
+                   dbComm.Parameters.AddWithValue("@Username", username);
+
+                   SqlDataReader reader = dbComm.ExecuteReader();
+
+                   while (reader.Read())
+                    {
+                        Product product = new Product
+                        {
+                            ProductID1 = int.Parse((string)reader["ProductID"]),
+                            Name1 = reader["Name"].ToString(),
+                            Category1 = reader["Category"].ToString(),
+                            ProductionDate1 = reader["ProductionDate"].ToString()
+                        };
+
+
+                        products.Add(product);
+                     }
+
+                  return products;
+             }
+
+            public IEnumerable<Product> GetProductsByUsernameAdmin()
+            {
+                List<Product> products = new List<Product>();
+
+
+                dbConn.Open();
+
+                string query = "SELECT * FROM Products";
+                dbComm = new SqlCommand(query, dbConn);
+
+
+                SqlDataReader reader = dbComm.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    ProductID1 = int.Parse((string)reader["ProductID"]),
-                    Username1 = reader["Username"].ToString(),
-                    Name1 = reader["Name"].ToString(),
-                    Category1 = reader["Category"].ToString(),
-                    ProductionDate1 = reader["ProductionDate"].ToString()
-                };
+                    Product product = new Product
+                    {
+                        ProductID1 = int.Parse((string)reader["ProductID"]),
+                        Username1 = reader["Username"].ToString(),
+                        Name1 = reader["Name"].ToString(),
+                        Category1 = reader["Category"].ToString(),
+                        ProductionDate1 = reader["ProductionDate"].ToString()
+                    };
 
 
-                products.Add(product);
+                    products.Add(product);
+                }
+
+                return products;
             }
-
-            return products;
-        }
         public IEnumerable<User> GetUsersAdmin()
         {
             List<User> users = new List<User>();
@@ -134,10 +138,10 @@ namespace ProgPoeFarmer31May.Models
             while (reader.Read())
             {
                 User user = new User
-                {                   
+                {
                     Username1 = reader["Username"].ToString(),
                     Password1 = reader["Password"].ToString(),
-                    Admin1 = reader["Category"].ToString(),                   
+                    Admin1 = reader["Category"].ToString(),
                 };
 
 
@@ -145,8 +149,9 @@ namespace ProgPoeFarmer31May.Models
             }
 
             return users;
-        }
-    }
+        }  
+    } 
 }
+
 
 

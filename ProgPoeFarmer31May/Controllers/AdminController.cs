@@ -10,7 +10,7 @@ namespace ProgPoeFarmer31May.Controllers
         // GET: AdminController
         public ActionResult List()
         {
-            return View(Product.products);
+            return View(ProductContext.products);
         }
         public ActionResult ProductEdit(int id)
         {
@@ -30,7 +30,7 @@ namespace ProgPoeFarmer31May.Controllers
         
         public ActionResult UserList()
         {
-            return View();
+            return View(UserContext.users);
         }
        
 
@@ -50,190 +50,166 @@ namespace ProgPoeFarmer31May.Controllers
         }
 
         // POST: AdminController/Create
-        [HttpPost]       
+        [HttpPost]
         public IActionResult UserCreate(User temp)
         {
-            User us = temp;
-            if (us.Username1 == null || us.Password1 == null || us.Admin1 == null)
+            User s = temp;
+            if (s.Username1 == null ||
+                s.Password1 == null ||
+                s.Admin1 == null)
             {
                 ViewBag.Error = "Please enter all the fields";
-                return View();
+                return View("Create");
             }
             else
             {
-
-                string connectionString = DataAccessLayer.connString;
-                string insertQuery = "INSERT INTO Users VALUES (@Value1, @Value2, @Value3)";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                int i = 0;
+                foreach (var user in UserContext.users)
                 {
-                    SqlCommand command = new SqlCommand(insertQuery, connection);
+                    if (s.Username1 == user.Username1)
+                    {
+                        i = 1;
 
-                    // Add parameters
-                    command.Parameters.AddWithValue("@Value1", us.Username1);
-                    command.Parameters.AddWithValue("@Value2", us.Password1);
-                    command.Parameters.AddWithValue("@Value3", us.Admin1);
-
-
-
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    connection.Close();
-
-                    return RedirectToAction("UserList");
+                    }
                 }
+                if (i == 1)
+                {
+                    ViewBag.Message = "User already taken";
+                    return View("Create");
+                }
+
             }
+
+            UserContext.users.Add(s);
+            return RedirectToAction("List");
+
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateProduct(Product temp)
+        public IActionResult CreateProduct(Product temp)  //Creating a product
         {
             Product p = temp;
-            if (p.Name1 == null || p.Category1 == null || p.ProductionDate1 == null)
+
+            int id = 1;
+            foreach (var prod in ProductContext.products)
             {
-                ViewBag.Error = "Please enter all the fields";
-                return View();
+                id = id + 1;
             }
-            else
-            {
-
-                string connectionString = DataAccessLayer.connString;
-                string insertQuery = "INSERT INTO Products (Name, Category, ProductionDate) VALUES (@Value1, @Value2, @Value3)";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand command = new SqlCommand(insertQuery, connection);
-
-                    // Add parameters
-                    command.Parameters.AddWithValue("@Value1", p.Name1);
-                    command.Parameters.AddWithValue("@Value2", p.Category1);
-                    command.Parameters.AddWithValue("@Value3", p.ProductionDate1);
 
 
+            p.ProductID1 = id;
+            p.Username1 = ProductContext.userproducts[0].Username1;
 
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    connection.Close();
 
-                    return RedirectToAction("List");
-                }
-            }
+            ProductContext.products.Add(p);
+            ProductContext.userproducts.Add(p);
+            return RedirectToAction("List");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UserDelete(User temp)
+        public IActionResult UserDelete(int id)
         {
-            User u = temp;
-
-            string connectionString = DataAccessLayer.connString;
-            string updateQuery = "DELETE FROM Users WHERE Username = @NewValue1;";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                SqlCommand command = new SqlCommand(updateQuery, connection);
 
-                // Add parameters for new values
-                command.Parameters.AddWithValue("@NewValue1", u.Username1);
-                connection.Open();
-                int rowsAffected = command.ExecuteNonQuery();
-                connection.Close();
-            }
-            return View();
-        }
 
-        
-
-        // POST: AdminController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult UserEdit(User u)
-        {
-            User data = u;
-            if (u.Username1 == null ||u.Password1 == null || u.Admin1 == null)
-            {
-                ViewBag.Error = "No data in list";
-                return View();
-            }
-            else
-            {// add data query here                     
-                string connectionString = DataAccessLayer.connString;
-                string updateQuery = "UPDATE Admin SET Username = @NewValue1, Password = @NewValue2 , Admin = @NewValue3";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                foreach (var usr in UserContext.users)
                 {
-                    SqlCommand command = new SqlCommand(updateQuery, connection);
-
-                    // Add parameters for new values
-                    command.Parameters.AddWithValue("@NewValue1", u.Username1);
-                    command.Parameters.AddWithValue("@NewValue2", u.Password1);
-                    command.Parameters.AddWithValue("@NewValue3", u.Admin1);
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    connection.Close();
+                    if (id.Equals(usr.Username1))
+                    {
+                        UserContext.users.Remove(usr);                     
+                    }
                 }
 
                 return RedirectToAction("UserList");
             }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+
+            }
+            return View("List");
+
+
         }
-        
+
+
 
         // POST: AdminController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Productedit(Product p)
+        public IActionResult UserEdit(User temp)
         {
-            Product data = p;
-            if (p.Name1 == null || p.Category1 == null || p.ProductionDate1 == null)
+
+            User u = temp;
+            
+            foreach (var usr in UserContext.users)
             {
-                ViewBag.Error = "No data in list";
-                return View();
-            }
-            else
-            {// add data query here                     
-                string connectionString = DataAccessLayer.connString;
-                string updateQuery = "UPDATE Products SET Name = @NewValue1, Category = @NewValue2 , ProductionDate = @NewValue3";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (u.Username1.Equals(usr.Username1))
                 {
-                    SqlCommand command = new SqlCommand(updateQuery, connection);
-
-                    // Add parameters for new values
-                    command.Parameters.AddWithValue("@NewValue1", p.Name1);
-                    command.Parameters.AddWithValue("@NewValue2", p.Category1);
-                    command.Parameters.AddWithValue("@NewValue3", p.ProductionDate1);
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    connection.Close();
+                    usr.Username1 = u.Username1;
+                    usr.Password1 = u.Password1;
+                    usr.Admin1 = u.Admin1;                                      
                 }
-
-                return RedirectToAction("Index");
+                
             }
+            return RedirectToAction("UserList");
         }
 
-        
 
-        // POST: AdminController/Delete/5
+        // POST: AdminController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult ProductDelete(Product temp)
+        public IActionResult ProductEdit(Product temp)
         {
+
             Product p = temp;
 
-            string connectionString = DataAccessLayer.connString;
-            string updateQuery = "DELETE FROM Products WHERE ProductID = @NewValue1;";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            int i = 0;
+            foreach (var prod in ProductContext.products)
             {
-                SqlCommand command = new SqlCommand(updateQuery, connection);
-
-                // Add parameters for new values
-                command.Parameters.AddWithValue("@NewValue1", p.ProductID1);
-                connection.Open();
-                int rowsAffected = command.ExecuteNonQuery();
-                connection.Close();
+                if (p.ProductID1.Equals(prod.ProductID1))
+                {
+                    prod.Name1 = p.Name1;
+                    prod.Category1 = p.Category1;
+                    prod.ProductionDate1 = p.ProductionDate1;
+                    ProductContext.products[i] = prod;
+                    ProductContext.userproducts[i] = prod;
+                }
+                i = i + 1;
             }
-            return View();
+            return RedirectToAction("List");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+
+
+                foreach (var prod in ProductContext.products)
+                {
+                    if (id.Equals(prod.ProductID1))
+                    {
+                        ProductContext.products.Remove(prod);
+                        ProductContext.userproducts.Remove(prod);
+                    }
+                }
+
+                return RedirectToAction("List");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+
+            }
+            return View("List");
+
+
+        }
+
+        // POST: AdminController/Delete/5
+
     }
 }

@@ -7,6 +7,9 @@ namespace ProgPoeFarmer31May.Controllers
 {
     public class AccountsController : Controller
     {
+        ProductContext initiatesarray = new ProductContext();
+        UserContext InitiatesArray = new UserContext();
+
         DataAccessLayer da = new DataAccessLayer();
         public IActionResult Index()
         {
@@ -19,43 +22,37 @@ namespace ProgPoeFarmer31May.Controllers
         [HttpPost]
         public IActionResult Create(User temp)
         {
-            User us = temp;
-           
-
-                using (SqlConnection connection = new SqlConnection(DataAccessLayer.connString))
-
+            User s = temp;
+            if (s.Username1 == null ||
+                s.Password1 == null )
+            {
+                ViewBag.Error = "Please enter all the fields";
+                return View("Create");
+            }
+            else
+            {
+                int i = 0;
+                foreach ( var user in UserContext.users)
                 {
-
-                    SqlCommand command = new
-
-                        SqlCommand("INSERT INTO Student " +
-
-                                   "VALUES(@StudentFName, @Password)", connection);
-
-                    command.Parameters.AddWithValue("@StudentFName", us.Username1);
-
-                    command.Parameters.AddWithValue("@Password", us.Password1);
-                   
-
-                    connection.Open();
-
-                    int i = command.ExecuteNonQuery();
-
-                    if (i > 0)
-
+                    if (s.Username1 == user.Username1)
                     {
-
-                        return RedirectToAction("Login");
-
+                        i = 1;
+                       
                     }
-
-
-                    return RedirectToAction("Create");
+                }
+                if (i == 1)
+                {
+                    ViewBag.Message = "User already taken";
+                    return View("Create");
                 }
 
-            
-           
             }
+            
+                UserContext.users.Add(s);
+                return RedirectToAction("Login");
+            
+
+        }
         public IActionResult Login()
         {
             return View();
@@ -65,10 +62,14 @@ namespace ProgPoeFarmer31May.Controllers
         public IActionResult Login(User temp)
         {
             User us = temp;
-            int i = da.accessgranted(us.Username1,us.Password1,UserContext.users);
-            if (i == 1)
+            int i = da.accessgranted(us.Username1,us.Password1);
+            if (i == 2)
             {
-                return RedirectToAction("List", "Userpage");
+                return RedirectToAction("List", "Admin");
+            }
+            else if(i == 1)
+            {
+                return RedirectToAction("List", "UserPage");
             }
             else
             {
@@ -76,10 +77,7 @@ namespace ProgPoeFarmer31May.Controllers
                 return RedirectToAction("Login");
             }
         }
-        public IActionResult AdminLogin()
-        {
-            return View();
-        }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AdminLogin(User temp)
@@ -88,11 +86,11 @@ namespace ProgPoeFarmer31May.Controllers
             int i = da.accessgrantedAdmin(us.Username1, us.Password1);
             if (i == 1)
             {
-                return RedirectToAction("List", "Userpage");
+                return RedirectToAction("List", "Admin");
             }
             else
             {
-                ViewBag.Error("This user does not exist");
+                
                 return RedirectToAction("Login");
             }
             

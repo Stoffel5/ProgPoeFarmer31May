@@ -1,39 +1,110 @@
 ﻿@model ProgPoeFarmer31May.Models.Product
 
 @{
-    ViewData["Title"] = "ProductEdit";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>ProductEdit</h1>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f9f2; /* Light green background color */
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        color: #2e7d32; /* Dark green heading color */
+    }
+
+    h4 {
+        font-size: 1.5em;
+        color: #4caf50; /* Light green heading color */
+    }
+
+    .row::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    .col-md-4 {
+        float: left;
+        width: 30%; /* Adjust column width as needed */
+        margin-top: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        color: #4caf50; /* Light green label color */
+    }
+
+    input[type="text"],
+    input[type="date"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #4caf50; /* Light green border color */
+        border-radius: 5px;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+
+    .btn {
+        background-color: #4caf50; /* Light green button color */
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        display: inline-block;
+        margin-top: 10px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+        .btn:hover {
+            background-color: #388e3c; /* Darker green on hover */
+        }
+
+    a {
+        color: #4caf50; /* Light green link color */
+        text-decoration: none;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<h1>Edit</h1>
 
 <h4>Product</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="ProductEdit">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            
             <div class="form-group">
-                <label asp-for="ProductID1" class="control-label"></label>
-                <input asp-for="ProductID1" class="form-control" />
-                <span asp-validation-for="ProductID1" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Username1" class="control-label"></label>
+                <label asp-for="Username1" class="control-label">Username</label>
                 <input asp-for="Username1" class="form-control" />
                 <span asp-validation-for="Username1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Name1" class="control-label"></label>
+                <label asp-for="Name1" class="control-label">Name</label>
                 <input asp-for="Name1" class="form-control" />
                 <span asp-validation-for="Name1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Category1" class="control-label"></label>
+                <label asp-for="Category1" class="control-label">Category</label>
                 <input asp-for="Category1" class="form-control" />
                 <span asp-validation-for="Category1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProductionDate1" class="control-label"></label>
+                <label asp-for="ProductionDate1" class="control-label">Production Date</label>
                 <input asp-for="ProductionDate1" class="form-control" />
                 <span asp-validation-for="ProductionDate1" class="text-danger"></span>
             </div>
@@ -45,9 +116,11 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="List">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

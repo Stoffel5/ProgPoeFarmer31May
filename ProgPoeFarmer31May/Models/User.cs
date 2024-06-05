@@ -2,7 +2,7 @@
 {
     public class User
     {
-        public static List<User> users = new List<User>();
+        
 
         string Username;
         string Password;

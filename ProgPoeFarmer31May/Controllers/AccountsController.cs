@@ -16,40 +16,46 @@ namespace ProgPoeFarmer31May.Controllers
         {
             return View();
         }
-        [HttpPost]      
+        [HttpPost]
         public IActionResult Create(User temp)
         {
             User us = temp;
-            if (us.Username1 == null || us.Password1 == null || us.Admin1 == null)
-            {
-                ViewBag.Error = "Please enter all the fields";
-                return View();
-            }
-            else
-            {
+           
 
-                string connectionString = DataAccessLayer.connString;
-                string insertQuery = "INSERT INTO Users (Username, Password) VALUES (@Value1, @Value2)";
+                using (SqlConnection connection = new SqlConnection(DataAccessLayer.connString))
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    SqlCommand command = new SqlCommand(insertQuery, connection);
 
-                    // Add parameters
-                    command.Parameters.AddWithValue("@Value1", us.Username1);
-                    command.Parameters.AddWithValue("@Value2", us.Password1);
-                    
+                    SqlCommand command = new
 
+                        SqlCommand("INSERT INTO Student " +
 
+                                   "VALUES(@StudentFName, @Password)", connection);
+
+                    command.Parameters.AddWithValue("@StudentFName", us.Username1);
+
+                    command.Parameters.AddWithValue("@Password", us.Password1);
+                   
 
                     connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    connection.Close();
 
-                    return RedirectToAction("Login");
+                    int i = command.ExecuteNonQuery();
+
+                    if (i > 0)
+
+                    {
+
+                        return RedirectToAction("Login");
+
+                    }
+
+
+                    return RedirectToAction("Create");
                 }
+
+            
+           
             }
-        }
         public IActionResult Login()
         {
             return View();
@@ -59,7 +65,7 @@ namespace ProgPoeFarmer31May.Controllers
         public IActionResult Login(User temp)
         {
             User us = temp;
-            int i = da.accessgranted(us.Username1,us.Password1);
+            int i = da.accessgranted(us.Username1,us.Password1,UserContext.users);
             if (i == 1)
             {
                 return RedirectToAction("List", "Userpage");

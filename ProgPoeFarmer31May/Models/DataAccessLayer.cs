@@ -19,39 +19,19 @@ namespace ProgPoeFarmer31May.Models
         SqlDataAdapter dbAdapter;
 
      
-        public int accessgranted(String Username, String Password)
+        public int accessgranted(String Username, String Password , User[] users)
         {
-            try
-            {
-
-                dbConn.Open();
-
-                string sql = "SELECT * FROM User where Username = @Username and Password = @Password";
-                dbComm = new SqlCommand(sql, dbConn);
-                dbComm.Parameters.AddWithValue("@Username", Username);
-                dbComm.Parameters.AddWithValue("@Password", Password);
-                dbAdapter = new SqlDataAdapter(dbComm);
-                dt = null;
-
-                dbAdapter.Fill(dt);
-                dbConn.Close();
-            }
-            catch (Exception ex)
-            {
-              
-
-            }
-
-            if (dt == null)
-            {
+             
+                foreach (var user in users)
+                {
+                    if (user.Username == Username && user.Password == Password)
+                    {
+                        return 1;
+                    }
+                }
                 return 0;
             }
-            else
-            {
-                Product.products.AddRange(GetProductsByUsername(Username));
-                return 1;
-            }
-            
+
         }
         public int accessgrantedAdmin(String Username, String Password)
         {

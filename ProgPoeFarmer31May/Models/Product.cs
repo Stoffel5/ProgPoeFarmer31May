@@ -5,7 +5,7 @@ namespace ProgPoeFarmer31May.Models
 {
     public class Product
     {
-      public static List<Product> products = new List<Product>();
+     
 
 
 

@@ -15,7 +15,7 @@ namespace ProgPoeFarmer31May.Controllers
 
             //space
             
-            return View(Product.products);
+            return View(ProductContext.products);
         }
 
         [HttpPost]

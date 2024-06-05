@@ -12,6 +12,44 @@ namespace ProgPoeFarmer31May.Controllers
         {
             return View();
         }
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]      
+        public IActionResult Create(User temp)
+        {
+            User us = temp;
+            if (us.Username1 == null || us.Password1 == null || us.Admin1 == null)
+            {
+                ViewBag.Error = "Please enter all the fields";
+                return View();
+            }
+            else
+            {
+
+                string connectionString = DataAccessLayer.connString;
+                string insertQuery = "INSERT INTO Users (Username, Password) VALUES (@Value1, @Value2)";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(insertQuery, connection);
+
+                    // Add parameters
+                    command.Parameters.AddWithValue("@Value1", us.Username1);
+                    command.Parameters.AddWithValue("@Value2", us.Password1);
+                    
+
+
+
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    connection.Close();
+
+                    return RedirectToAction("Login");
+                }
+            }
+        }
         public IActionResult Login()
         {
             return View();
@@ -28,7 +66,7 @@ namespace ProgPoeFarmer31May.Controllers
             }
             else
             {
-                ViewBag.Error("This user does not exist");
+                ViewBag.Name("This user does not exist");
                 return RedirectToAction("Login");
             }
         }

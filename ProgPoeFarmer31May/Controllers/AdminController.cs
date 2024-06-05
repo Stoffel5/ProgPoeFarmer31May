@@ -50,8 +50,7 @@ namespace ProgPoeFarmer31May.Controllers
         }
 
         // POST: AdminController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost]       
         public IActionResult UserCreate(User temp)
         {
             User us = temp;
@@ -64,7 +63,7 @@ namespace ProgPoeFarmer31May.Controllers
             {
 
                 string connectionString = DataAccessLayer.connString;
-                string insertQuery = "INSERT INTO Users (Username, Password, Admin) VALUES (@Value1, @Value2, @Value3)";
+                string insertQuery = "INSERT INTO Users VALUES (@Value1, @Value2, @Value3)";
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -81,7 +80,7 @@ namespace ProgPoeFarmer31May.Controllers
                     int rowsAffected = command.ExecuteNonQuery();
                     connection.Close();
 
-                    return RedirectToAction("Login");
+                    return RedirectToAction("UserList");
                 }
             }
         }

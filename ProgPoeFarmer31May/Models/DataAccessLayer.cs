@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.CodeAnalysis;
 using System.Collections;
 using System.Data;
@@ -11,7 +12,7 @@ namespace ProgPoeFarmer31May.Models
 {
     public class DataAccessLayer
     {
-       public static string connString = "Data Source= cpkruger.database.windows.net;Initial Catalog=FarmDB;User ID= ST1045492;Password= DoomsD@yDevice5";
+        public static string connString = "Data Source=cpkruger.database.windows.net;Initial Catalog=FarmDB;User ID=ST1045492;Password=DoomsD@yDevice5";
         SqlConnection dbConn = new SqlConnection(connString);
         SqlCommand dbComm;
         DataTable dt;
@@ -20,18 +21,26 @@ namespace ProgPoeFarmer31May.Models
      
         public int accessgranted(String Username, String Password)
         {
-            
-            dbConn.Open();
+            try
+            {
 
-            string sql = "SELECT * FROM User where Username = @Username and Password = @Password";
-            dbComm = new SqlCommand(sql, dbConn);
-            dbComm.Parameters.AddWithValue("@Username", Username);
-            dbComm.Parameters.AddWithValue("@Password", Password);
-            dbAdapter = new SqlDataAdapter(dbComm);
-             dt = null;
+                dbConn.Open();
 
-            dbAdapter.Fill(dt);
+                string sql = "SELECT * FROM User where Username = @Username and Password = @Password";
+                dbComm = new SqlCommand(sql, dbConn);
+                dbComm.Parameters.AddWithValue("@Username", Username);
+                dbComm.Parameters.AddWithValue("@Password", Password);
+                dbAdapter = new SqlDataAdapter(dbComm);
+                dt = null;
 
+                dbAdapter.Fill(dt);
+                dbConn.Close();
+            }
+            catch (Exception ex)
+            {
+              
+
+            }
 
             if (dt == null)
             {
@@ -42,6 +51,7 @@ namespace ProgPoeFarmer31May.Models
                 Product.products.AddRange(GetProductsByUsername(Username));
                 return 1;
             }
+            
         }
         public int accessgrantedAdmin(String Username, String Password)
         {

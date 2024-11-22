@@ -13,6 +13,7 @@
                 products.Add(new Product(2, "Birdfeeder29", "Shovel", "Landscaping", "Oct 10 2024"));
                 products.Add(new Product(3, "Peace4Reece", "BurgerApp", "FoodCart", "Sep 13 2024"));
                 products.Add(new Product(4, "CP", "Forklift", "Storage", "Aug 24 2024"));
+                products.Add(new Product(4, "Peace4Reece", "Forklift", "Storage", "Aug 24 2024"));
             }
         }
     }
